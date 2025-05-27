@@ -1,0 +1,73 @@
+app:
+  jwk-set-uri: ${APP_KEYCLOAK_JWK_SET_URI:http://localhost:8081/realms/course-management-realm/protocol/openid-connect/certs}
+  course-service:
+    uri: ${COURSE_SERVICE_URL:http://localhost:9001}
+
+  review-service:
+    uri: ${REVIEW_SERVICE_URL:http://localhost:9002}
+spring:
+  application:
+    name: course-composite-service
+server:
+  port: 5000
+logging:
+  level:
+    root: INFO
+    io.javatab.microservices.composite.course: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{trace_id:-N/A}] [%X{span_id:-N/A}] %-5level %logger{36} - %msg%n"
+
+
+  # Security related properties
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8081/realms/course-management-realm}
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI:http://localhost:8081/realms/course-management-realm/protocol/openid-connect/certs}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,metrics,prometheus"
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+      uri: "http_server_requests"
+    endpoint:
+      metrics:
+        enabled: true
+      prometheus:
+        enabled: true
+      health:
+        show-details: always
+    distribution:
+      percentiles-histogram: # enable histogram for percentile
+        http.server.requests: true
+      slo:
+        http.server.requests: 10ms, 50ms, 100ms, 500ms, 1s
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/course-management-realm
+          jwk-set-uri: http://keycloak:8080/realms/course-management-realm/protocol/openid-connect/certs
+server:
+  port: 8080
+app:
+  jwk-set-uri: http://keycloak:8080/realms/course-management-realm/protocol/openid-connect/certs
+  course-service:
+    uri: http://course:8080
+  review-service:
+    uri: http://review:8080
