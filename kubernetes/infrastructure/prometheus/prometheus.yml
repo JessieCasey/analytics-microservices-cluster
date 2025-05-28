@@ -11,9 +11,7 @@ data:
         metrics_path: '/actuator/prometheus'
         static_configs:
           - targets: 
-            - 'course-composite-service:80'
-            - 'course-service:80'
-            - 'review-service:80'
+            - 'price-service:80'
             - 'gateway-service:80'
 ---
 apiVersion: apps/v1

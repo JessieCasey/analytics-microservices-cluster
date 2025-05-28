@@ -30,7 +30,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "befemf9rt4ydcc"
+        "uid":"fen73nd86ark0f"
       },
       "fieldConfig": {
         "defaults": {
@@ -77,7 +77,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "befemf9rt4ydcc"
+            "uid":"fen73nd86ark0f"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -113,7 +113,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "befemf9rt4ydcc"
+        "uid":"fen73nd86ark0f"
       },
       "fieldConfig": {
         "defaults": {
@@ -160,7 +160,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "befemf9rt4ydcc"
+            "uid":"fen73nd86ark0f"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -204,7 +204,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "befemf9rt4ydcc"
+        "uid":"fen73nd86ark0f"
       },
       "fieldConfig": {
         "defaults": {
@@ -265,7 +265,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "befemf9rt4ydcc"
+            "uid":"fen73nd86ark0f"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -282,7 +282,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "befemf9rt4ydcc"
+        "uid":"fen73nd86ark0f"
       },
       "fieldConfig": {
         "defaults": {
@@ -335,7 +335,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "befemf9rt4ydcc"
+            "uid":"fen73nd86ark0f"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -353,7 +353,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "befemf9rt4ydcc"
+        "uid":"fen73nd86ark0f"
       },
       "fieldConfig": {
         "defaults": {
@@ -437,7 +437,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "befemf9rt4ydcc"
+            "uid":"fen73nd86ark0f"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -454,7 +454,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "befemf9rt4ydcc"
+        "uid":"fen73nd86ark0f"
       },
       "fieldConfig": {
         "defaults": {
@@ -538,7 +538,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "befemf9rt4ydcc"
+            "uid":"fen73nd86ark0f"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -555,7 +555,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "befemf9rt4ydcc"
+        "uid":"fen73nd86ark0f"
       },
       "fieldConfig": {
         "defaults": {
@@ -638,7 +638,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "befemf9rt4ydcc"
+            "uid":"fen73nd86ark0f"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -655,7 +655,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "befemf9rt4ydcc"
+        "uid":"fen73nd86ark0f"
       },
       "fieldConfig": {
         "defaults": {
@@ -763,7 +763,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "befemf9rt4ydcc"
+            "uid":"fen73nd86ark0f"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -780,7 +780,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "befemf9rt4ydcc"
+        "uid":"fen73nd86ark0f"
       },
       "fieldConfig": {
         "defaults": {
@@ -863,7 +863,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "befemf9rt4ydcc"
+            "uid":"fen73nd86ark0f"
           },
           "editorMode": "code",
           "exemplar": true,
@@ -936,7 +936,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "befemf9rt4ydcc"
+          "uid":"fen73nd86ark0f"
         },
         "definition": "label_values(application)",
         "includeAll": false,

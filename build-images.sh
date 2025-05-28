@@ -2,9 +2,7 @@ echo "Building Docker images for Kubernetes using Minikube..."
 
 # Define an array of services
 SERVICES=(
-  "microservices/course-composite-service:course-composite-service"
-  "microservices/course-service:course-service"
-#  "microservices/review-service:review-service"
+  "microservices/price-service:price-service"
   "spring-cloud/gateway-service:gateway-service"
 )
 

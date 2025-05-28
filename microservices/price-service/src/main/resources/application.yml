@@ -1,0 +1,50 @@
+server:
+  port: 9002
+  error:
+    include-message: always
+    include-binding-errors: always
+spring:
+  application:
+    name: price-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/price-db
+      auto-index-creation: true
+logging:
+  level:
+    root: INFO
+    io.javatab.microservices.composite.review: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{trace_id:-N/A}] [%X{span_id:-N/A}] %-5level %logger{36} - %msg%n"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,metrics,prometheus"
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      uri: "http_server_requests"
+    endpoint:
+      metrics:
+        enabled: true
+      prometheus:
+        enabled: true
+      health:
+        show-details: always
+    distribution:
+      percentiles-histogram: # enable histogram for percentile
+        http.server.requests: true
+      slo:
+        http.server.requests: 10ms, 50ms, 100ms, 500ms, 1s
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  data:
+    mongodb:
+      uri: mongodb://mongodb:27017/price-db
+server:
+  port: 8080

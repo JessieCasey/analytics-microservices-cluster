@@ -42,9 +42,7 @@ if [[ "$1" == "docker" ]]; then
 else
   echo "Starting services using local JAR files..."
   # Run each service in the background
-  run_service "course-composite-service"
-  run_service "course-service"
-  run_service "review-service"
+  run_service "price-service"
 
   # Wait for all background processes to finish
   wait

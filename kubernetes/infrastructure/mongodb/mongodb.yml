@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: review-mongodb
+  name: price-mongodb
   labels:
-    app: review-mongodb
+    app: price-mongodb
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: review-mongodb
+      app: price-mongodb
   template:
     metadata:
       labels:
-        app: review-mongodb
+        app: price-mongodb
     spec:
       containers:
-        - name: review-mongodb
+        - name: price-mongodb
           image: mongo:6.0.4  # Latest stable MongoDB version
           ports:
             - containerPort: 27017
@@ -29,10 +29,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: review-mongodb
+  name: price-mongodb
 spec:
   selector:
-    app: review-mongodb
+    app: price-mongodb
   ports:
     - protocol: TCP
       port: 27017
