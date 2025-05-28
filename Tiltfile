@@ -30,6 +30,7 @@ docker_build(
 k8s_yaml([
     "microservices/price-service/kubernetes/deployment.yml",
     "microservices/price-service/kubernetes/service.yml"
+    "microservices/price-service/kubernetes/hpa.yaml",
 ])
 k8s_resource(
     "price-service",

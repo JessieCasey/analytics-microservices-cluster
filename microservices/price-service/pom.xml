@@ -8,7 +8,7 @@
 		<version>3.4.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>io.javatab.microservices.core.price</groupId>
+	<groupId>io.javatab.microservices.core.app</groupId>
 	<artifactId>price-service</artifactId>
 	<version>1.0.0</version>
 	<name>price-service</name>
