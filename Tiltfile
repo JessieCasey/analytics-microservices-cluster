@@ -2,18 +2,12 @@
 k8s_yaml([
     "kubernetes/infrastructure/mongodb/mongodb.yml",
     "kubernetes/infrastructure/prometheus/prometheus.yml",
-    "kubernetes/infrastructure/fluent-bit/fluent-bit.yml",
-    "kubernetes/infrastructure/loki/loki.yml",
-    "kubernetes/infrastructure/tempo/tempo.yml",
     "kubernetes/infrastructure/grafana/grafana.yml"
 
 ])
 
 # Define infrastructure resources
 k8s_resource("prometheus", labels=["observability"], auto_init=True)
-k8s_resource("fluent-bit", labels=["observability"], auto_init=True)
-k8s_resource("loki", labels=["observability"], auto_init=True)
-k8s_resource("tempo", labels=["observability"], auto_init=True)
 k8s_resource("grafana", labels=["observability"], auto_init=True)
 k8s_resource("price-mongodb", labels=["infra"], auto_init=True)
 
@@ -29,8 +23,8 @@ docker_build(
 )
 k8s_yaml([
     "microservices/price-service/kubernetes/deployment.yml",
-    "microservices/price-service/kubernetes/service.yml"
-    "microservices/price-service/kubernetes/hpa.yaml",
+    "microservices/price-service/kubernetes/service.yml",
+    "microservices/price-service/kubernetes/hpa.yml",
 ])
 k8s_resource(
     "price-service",

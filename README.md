@@ -98,9 +98,12 @@ This will start all microservices on their respective ports
 1. Let's Start minikube
 
 ```shell
+minikube delete --profile microservice-deployment
+```
+```shell
     minikube start \
                 --profile=microservice-deployment \
-                --memory=4g \
+                --memory=5g \
                 --cpus=4 \
                 --disk-size=30g \
                 --kubernetes-version=v1.27 \
@@ -132,7 +135,9 @@ This will start all microservices on their respective ports
 ```shell
     minikube addons enable ingress --profile microservice-deployment
 ```
-
+```shell
+  minikube addons enable metrics-server --profile=microservice-deployment
+```
 ```markdown
 💡 ingress is an addon maintained by Kubernetes. For any concerns contact minikube on GitHub.
 You can view the list of minikube maintainers at: https://github.com/kubernetes/minikube/blob/master/OWNERS

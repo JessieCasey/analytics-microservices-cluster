@@ -1,6 +1,16 @@
 version: '3.8'
 
 services:
+  price:
+    build: ../microservices/price-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/price-db
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+
   mongo:
     image: mongo:7.0
     container_name: mongo

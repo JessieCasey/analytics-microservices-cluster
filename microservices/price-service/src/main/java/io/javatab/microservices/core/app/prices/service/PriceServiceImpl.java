@@ -23,14 +23,6 @@ public class PriceServiceImpl implements PriceService {
 
     private final PriceRepository repo;
     private final PriceMapper mapper;
-    private final MongoTemplate mongo;
-
-    @Override
-    public List<PriceDto> getPricesByTicker(String ticker) {
-        return repo.findByTickerOrderByDateDesc(ticker).stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
-    }
 
     @Override
     public List<Price> getEntitiesByTickerAndDateRange(String ticker,
@@ -40,13 +32,6 @@ public class PriceServiceImpl implements PriceService {
     }
 
     @Override
-    public List<String> getAllTickers() {
-        return mongo.query(Price.class)
-                .distinct("ticker")
-                .as(String.class)
-                .all();
-    }
-
     public Page<PriceDto> getLatestPrices(int page, int size) {
         long total = 0;
         int skip  = page * size;
@@ -57,4 +42,9 @@ public class PriceServiceImpl implements PriceService {
         return new PageImpl<>(dtos, PageRequest.of(page, size), total);
     }
 
+    @Override
+    public List<Price> findAllByTickerOrderByDate(String ticker) {
+        return repo.findAllByTickerOrderByDate(ticker);
+
+    }
 }

@@ -7,7 +7,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: price-service
-  minReplicas: 2
+  minReplicas: 3
   maxReplicas: 10
   metrics:
     - type: Resource
@@ -15,4 +15,16 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 50
+          averageUtilization: 40
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300   # wait 5m before scaling down
+      policies:
+        - type: Percent
+          value: 10
+          periodSeconds: 60             # at most 10% fewer pods per minute
+    scaleUp:
+      policies:
+        - type: Pods
+          value: 2
+          periodSeconds: 30             # can add up to 2 pods each 30s

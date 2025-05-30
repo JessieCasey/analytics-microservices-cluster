@@ -2,6 +2,7 @@ package io.javatab.microservices.core.app.prices.service;
 
 import io.javatab.microservices.core.app.prices.model.IndicatorResult;
 import io.javatab.microservices.core.app.prices.model.Price;
+import io.javatab.microservices.core.app.prices.model.SMAResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.ta4j.core.Bar;
@@ -18,6 +19,8 @@ import org.ta4j.core.indicators.statistics.StandardDeviationIndicator;
 import org.ta4j.core.num.DecimalNum;
 import org.ta4j.core.num.Num;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -128,6 +131,38 @@ public class Ta4jHeavyService {
                     recoveryTimeBars
             ));
         }
+        return results;
+    }
+
+    /**
+     * Fetches the full price history for `ticker` and computes
+     * a simple moving average (SMA) with the given window size.
+     *
+     * @param ticker the symbol to compute over
+     * @param window the look-back period (e.g. 14, 50, 200)
+     * @return a List of (date, ticker, sma) for each bar where i >= window−1
+     */
+    public List<SMAResult> computeSimpleMovingAverage(String ticker, int window) {
+        List<Price> prices = priceService.findAllByTickerOrderByDate(ticker);
+
+        List<SMAResult> results = new ArrayList<>();
+        // we need at least `window` bars to compute the first SMA
+        for (int i = window - 1; i < prices.size(); i++) {
+            BigDecimal sum = BigDecimal.ZERO;
+            // sum the close prices over [i-window+1 .. i]
+            for (int j = i - window + 1; j <= i; j++) {
+                sum = sum.add(prices.get(j).getClose());
+            }
+            BigDecimal sma = sum.divide(BigDecimal.valueOf(window), RoundingMode.HALF_UP);
+
+            // record the SMA for the bar at index i
+            results.add(new SMAResult(
+                    ticker,
+                    prices.get(i).getDate(),
+                    sma
+            ));
+        }
+
         return results;
     }
 }

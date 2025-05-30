@@ -22,11 +22,16 @@ public interface PriceRepository extends MongoRepository<Price, String> {
                     "ticker: { '$first': '$ticker' }, " +
                     "date:   { '$first': '$date'   }, " +
                     "close:  { '$first': '$close'  }," +
+                    "open:  { '$first': '$open'  }," +
+                    "high:  { '$first': '$high'  }," +
+                    "low:  { '$first': '$low' }," +
                     "volume:  { '$first': '$volume'  }" +
                     "} }",
             "{ '$skip': ?0 }",
             "{ '$limit': ?1 }"
     })
     List<Price> findLatestPrices(int skip, int limit);
+
+    List<Price> findAllByTickerOrderByDate(String ticker);
 
 }

@@ -16,9 +16,6 @@ services:
         fluentd-address: 127.0.0.1:24224
     networks:
       - shared-network
-    #depends_on:
-     # postgres:
-      #  condition: service_healthy
 
   gateway-service:
     build: ../spring-cloud/gateway-service
