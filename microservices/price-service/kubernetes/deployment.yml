@@ -29,4 +29,4 @@ spec:
               memory: "712Mi"
             limits:
               cpu: "550m"
-              memory: "912Mi"
+              memory: "712Mi"

@@ -103,7 +103,7 @@ minikube delete --profile microservice-deployment
 ```shell
     minikube start \
                 --profile=microservice-deployment \
-                --memory=5g \
+                --memory=6g \
                 --cpus=4 \
                 --disk-size=30g \
                 --kubernetes-version=v1.27 \

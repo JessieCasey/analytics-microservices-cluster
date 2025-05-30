@@ -1,11 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: price-mongodb
   labels:
     app: price-mongodb
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: price-mongodb
@@ -24,14 +24,15 @@ spec:
               mountPath: /data/db
           resources:
             requests:
-              cpu: "300m"
-              memory: "512Mi"
+              memory: "1Gi"         # Guaranteed 1 GiB RAM
+              cpu: "500m"           # Guaranteed 0.5 CPU core
             limits:
-              cpu: "500m"
-              memory: "1Gi"
+              memory: "2Gi"         # Can burst up to 2 GiB RAM before OOM
+              cpu: "1"              # Can burst up to 1 CPU core
       volumes:
         - name: mongodb-storage
           emptyDir: {}  # Use PersistentVolumeClaim for production
+  serviceName: price-mongodb
 ---
 apiVersion: v1
 kind: Service
