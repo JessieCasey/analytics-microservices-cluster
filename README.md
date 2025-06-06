@@ -1,105 +1,71 @@
-# Table of Contents
+# Зміст
 
-- [Prerequisites](#prerequisites)
-- [Run the application](#run-the-application)
-- [Guide to grafana](#guide-to-grafana)
+* [Передумови](#передумови)
+* [Запуск застосунку](#запуск-застосунку)
+* [Керівництво з Grafana](#керівництво-з-grafana)
 
-# Container Diagram
+# Схема контейнерів
 
-## Description
+## Опис
 
-The **Price Management System** consists of multiple Spring Boot microservices, a gateway, databases, and external
-systems for observability, deployed via Docker Compose or Kubernetes (Tilt).
+**Система управління цінами** складається з кількох мікросервісів Spring Boot, шлюзу, баз даних і зовнішніх систем для
+моніторингу, які розгортаються через Docker Compose або Kubernetes (Tilt).
 
-## Containers
+## Контейнери
 
-| Container            | Technology           | Description                                               |
-|----------------------|----------------------|-----------------------------------------------------------|
-| **Gateway Service**  | Spring Cloud Gateway | Routes requests to microservices, handles load balancing. |
-| **Price Service**    | Spring Boot          | Manages prices data, interacts with Mongo.                |
-| **MongoDB Database** | MongoDB              | Stores review data for Review Service.                    |
-| **Keycloak**         | Keycloak             | External auth server for SSO and role-based access.       |
-| **Grafana**          | Grafana              | Visualization for metrics, logs, and traces.              |
-| **Loki**             | Loki                 | Log aggregation system.                                   |
-| **Tempo**            | Tempo                | Distributed tracing system.                               |
-| **Fluent-bit**       | Fluent-bit           | Log forwarding agent.                                     |
-| **Otel Collector**   | OpenTelemetry        | Collects and exports telemetry data.                      |
+| Контейнер            | Технологія           | Опис                                                                       |
+|----------------------|----------------------|----------------------------------------------------------------------------|
+| **Gateway Service**  | Spring Cloud Gateway | Маршрутизує запити до мікросервісів, забезпечує балансування навантаження. |
+| **Price Service**    | Spring Boot          | Управляє даними про ціни, взаємодіє з MongoDB.                             |
+| **MongoDB Database** | MongoDB              | Зберігає дані оглядів для сервісу оглядів.                                 |
+| **Keycloak**         | Keycloak             | Зовнішній сервер аутентифікації для SSO і керування доступом.              |
+| **Grafana**          | Grafana              | Візуалізація метрик, логів і трасувань.                                    |
+| **Loki**             | Loki                 | Система агрегації логів.                                                   |
+| **Tempo**            | Tempo                | Система розподіленого трасування.                                          |
+| **Fluent-bit**       | Fluent-bit           | Агент для пересилання логів.                                               |
+| **Otel Collector**   | OpenTelemetry        | Збирає і експортує телеметричні дані.                                      |
 
-## Interactions
+## Взаємодії
 
-- **Users/Admin** → **Gateway Service**: HTTP requests via browser/API client.
-- **Gateway Service** → **Price Service**: Routes course-related requests.
-- **Price Service** ↔ **MongoDB Database**: CRUD operations for review data.
-- **All Services** → **Fluent-bit**: Sends logs.
-- **All Services** → **Otel Collector**: Sends metrics and traces.
-- **Fluent-bit** → **Loki**: Forwards logs.
-- **Otel Collector** → **Tempo**: Sends traces.
-- **Otel Collector** → **Grafana**: Sends metrics.
-- **Grafana** ← **Loki**: Queries logs.
-- **Grafana** ← **Tempo**: Queries traces.
+* **Користувачі/Адміністратор** → **Gateway Service**: HTTP-запити через браузер/API-клієнт.
+* **Gateway Service** → **Price Service**: Маршрутизує запити щодо курсів.
+* **Price Service** ↔ **MongoDB Database**: Операції CRUD для даних оглядів.
+* **Всі сервіси** → **Fluent-bit**: Відправляють логи.
+* **Всі сервіси** → **Otel Collector**: Відправляють метрики і трасування.
+* **Fluent-bit** → **Loki**: Пересилає логи.
+* **Otel Collector** → **Tempo**: Відправляє трасування.
+* **Otel Collector** → **Grafana**: Відправляє метрики.
+* **Grafana** ← **Loki**: Запитує логи.
+* **Grafana** ← **Tempo**: Запитує трасування.
 
----
+### Додаткові нотатки
 
-### Additional Notes
+* **Технології**: Spring Boot, Spring Cloud, JPA, MongoDB driver, OTel, Fluent-bit.
+* **Взаємодії**: REST/HTTP, JDBC, MongoDB протокол.
+* **Масштабування**: Kubernetes підтримує репліки; Docker Compose — для локальної розробки.
 
-- **Tech**: Spring Boot, Spring Cloud, JPA, MongoDB driver, OTel, Fluent-bit.
-- **Interactions**: REST/HTTP, JDBC, MongoDB protocol.
-- **Scalability**: Kubernetes supports replicas; Docker Compose for local dev.
+# Передумови
 
-# Prerequisites
+* **Java 17+** (рекомендується для Spring Boot 3.x)
+* **Maven 3.8+**
+* **Docker & Docker Compose** (для локального розгортання в контейнерах)
+* **Minikube & Tilt** (для розгортання на Kubernetes)
+* **Httpie / cURL** (для тестування API)
+* **Postman / Bruno**
 
-- **Java 17+** (Recommended for Spring Boot 3.x)
-- **Maven 3.8+**
-- **Docker & Docker Compose** (for local containerized deployment)
-- **Minikube & Tilt** (for Kubernetes-based deployment)
-- **Httpie / cURL** (for API testing)
-- **Postman / Bruno**
+# Запуск застосунку
 
-# Run the application
+Запустити застосунок можна за допомогою **Kubernetes (Tilt)**.
 
-You can start the application using either **Docker (Docker Compose)** or **Kubernetes (Tilt)**.
-
-Ensure that your **Docker Engine** is running before proceeding.
-
-### Running with Docker or Individual Services on Host OS
-
-1. Start Persistent Services:
-
-```shell
-  cd docker && docker compose -f docker-compose-infra.yml up --build
-```
-
-This command initializes **PostgreSQL** and **MongoDB**.
-
-2. Launch the Observability Stack:
-
- ```shell
-    cd docker && docker compose -f docker-compose-observability.yml up --build
-```
-
-This set up **Grafana**, **Tempo**, **Loki**, **Fluent-bit**, **Prometheus**
-
-3. Start the Microservices
-
-```shell
-    sh run.sh docker
-```
-
-or
-
-```shell
-    sh run.sh
-```
-
-This will start all microservices on their respective ports
 
 ### Running with Tilt in Kubernetes env `(Minikube)`
 
-1. Let's Start minikube
+1. Спочатку запустимо сервер
 
 ```shell
 minikube delete --profile microservice-deployment
 ```
+
 ```shell
     minikube start \
                 --profile=microservice-deployment \
@@ -130,14 +96,16 @@ minikube delete --profile microservice-deployment
 🏄  Done! kubectl is now configured to use "microservice-deployment" cluster and "default" namespace by default
 ```
 
-2. Enable Ingress addon
+2. Підключимо потрібні плагіни
 
 ```shell
     minikube addons enable ingress --profile microservice-deployment
 ```
+
 ```shell
   minikube addons enable metrics-server --profile=microservice-deployment
 ```
+
 ```markdown
 💡 ingress is an addon maintained by Kubernetes. For any concerns contact minikube on GitHub.
 You can view the list of minikube maintainers at: https://github.com/kubernetes/minikube/blob/master/OWNERS
@@ -149,13 +117,15 @@ You can view the list of minikube maintainers at: https://github.com/kubernetes/
 🌟 The 'ingress' addon is enabled
 ```
 
-3. Run this to make sure minikube can read images from local registry
+3. Для локальної розробки потрібно адресувати локальний докер
 
 ```shell
     eval $(minikube -p microservice-deployment docker-env)
 ```
 
 4. Let's build the images
+5. 
+> тут потрібно збудувати проекти, це можна зробити в IDEA у вкладці maven, як створються target папки можна продовжити.
 
 ```shell
     sh build-images.sh      
@@ -175,13 +145,13 @@ gateway-service built successfully!
 All images built successfully!
 ```
 
-5. List the images
+5. Можна переглянути images
 
 ```shell
     docker images
 ```
 
-or
+або
 
 ```shell
     docker image ls
@@ -193,19 +163,19 @@ gateway-service                                      latest     2e07a4894e3d   3
 review-service                                       latest     857bf2e92e8d   3 minutes ago   336MB
 course-service                                       latest     ad9a018bd4a3   3 minutes ago   359MB
 course-composite-service                             latest     5e1868bd77bc   3 minutes ago   328MB
-registry.k8s.io/ingress-nginx/controller             <none>     ee44bc236803   5 months ago    293MB 
-registry.k8s.io/ingress-nginx/kube-webhook-certgen   <none>     a62eeff05ba5   5 months ago    63.8MB 
-registry.k8s.io/kube-apiserver                       v1.27.16   1113933272f1   7 months ago    123MB
-registry.k8s.io/kube-controller-manager              v1.27.16   2db343b95a4c   7 months ago    115MB
-registry.k8s.io/kube-scheduler                       v1.27.16   91ad8454afdd   7 months ago    57.7MB
-registry.k8s.io/kube-proxy                           v1.27.16   ea1f910af975   7 months ago    79.9MB
-registry.k8s.io/etcd                                 3.5.12-0   3861cfcd7c04   13 months ago   149MB
-registry.k8s.io/coredns/coredns                      v1.10.1    ead0a4a53df8   2 years ago     53.6MB
-registry.k8s.io/pause                                3.9        e6f181688397   2 years ago     744kB
-gcr.io/k8s-minikube/storage-provisioner              v5         6e38f40d628d   3 years ago     31.5MB
+registry.k8s.io/ingress-nginx/controller
+<none> ee44bc236803 5 months ago 293MB
+    registry.k8s.io/ingress-nginx/kube-webhook-certgen
+    <none> a62eeff05ba5 5 months ago 63.8MB
+        registry.k8s.io/kube-apiserver v1.27.16 1113933272f1 7 months ago 123MB
+        registry.k8s.io/kube-controller-manager v1.27.16 2db343b95a4c 7 months ago 115MB
+        registry.k8s.io/kube-scheduler v1.27.16 91ad8454afdd 7 months ago 57.7MB
+        registry.k8s.io/kube-proxy v1.27.16 ea1f910af975 7 months ago 79.9MB
+        registry.k8s.io/etcd 3.5.12-0 3861cfcd7c04 13 months ago 149MB
+        registry.k8s.io/coredns/coredns v1.10.1 ead0a4a53df8 2 years ago 53.6MB
+        registry.k8s.io/pause 3.9 e6f181688397 2 years ago 744kB
+        gcr.io/k8s-minikube/storage-provisioner v5 6e38f40d628d 3 years ago 31.5MB
 ```
-
-You can also get Table view
 
 ```shell
     minikube image ls --format table --profile microservice-deployment
@@ -221,18 +191,20 @@ You can also get Table view
 | registry.k8s.io/kube-scheduler                     | v1.27.16 | 91ad8454afddc | 57.7MB |
 | docker.io/library/gateway-service                  | latest   | 2e07a4894e3d5 | 339MB  |
 | docker.io/library/course-service                   | latest   | ad9a018bd4a3c | 359MB  |
-| registry.k8s.io/ingress-nginx/kube-webhook-certgen | <none>   | a62eeff05ba51 | 63.8MB | 
-| registry.k8s.io/kube-apiserver                     | v1.27.16 | 1113933272f1e | 123MB  | 
-| registry.k8s.io/kube-proxy                         | v1.27.16 | ea1f910af975c | 79.9MB |
-| gcr.io/k8s-minikube/storage-provisioner            | v5       | 6e38f40d628db | 31.5MB |
-| registry.k8s.io/coredns/coredns                    | v1.10.1  | ead0a4a53df89 | 53.6MB |
-| registry.k8s.io/pause                              | 3.9      | e6f1816883972 | 744kB  |
-| registry.k8s.io/ingress-nginx/controller           | <none>   | ee44bc2368033 | 293MB  |
-| registry.k8s.io/etcd                               | 3.5.12-0 | 3861cfcd7c04c | 149MB  |
-|----------------------------------------------------|----------|---------------|--------|
+| registry.k8s.io/ingress-nginx/kube-webhook-certgen |
+<none> | a62eeff05ba51 | 63.8MB |
+    | registry.k8s.io/kube-apiserver | v1.27.16 | 1113933272f1e | 123MB |
+    | registry.k8s.io/kube-proxy | v1.27.16 | ea1f910af975c | 79.9MB |
+    | gcr.io/k8s-minikube/storage-provisioner | v5 | 6e38f40d628db | 31.5MB |
+    | registry.k8s.io/coredns/coredns | v1.10.1 | ead0a4a53df89 | 53.6MB |
+    | registry.k8s.io/pause | 3.9 | e6f1816883972 | 744kB |
+    | registry.k8s.io/ingress-nginx/controller |
+    <none> | ee44bc2368033 | 293MB |
+        | registry.k8s.io/etcd | 3.5.12-0 | 3861cfcd7c04c | 149MB |
+        |----------------------------------------------------|----------|---------------|--------|
 ```
 
-6. Let's start the Microservices
+6. Тепер запуск кластеру
 
 ```shell
     Tilt up
@@ -272,154 +244,168 @@ grafana                    2025-03-11T10:37:08Z
 ```
 
 ![Tilt web page](notes/images/tilt.png)
+
 ---
 
-# Check the endpoints
+# Перевірка ендпоінтів
 
-> [!NOTE]
-> On macOS and Windows, the Minikube ingress add-on doesn't support using the cluster's IP when running on Docker, so
-> minikube tunnel --profile polar is required to expose the cluster locally via 127.0.0.1, similar to kubectl
-> port-forward
-> but for the entire cluster.
->```shell
->  minikube tunnel --profile microservice-deployment
->```
-> Add below in your /etc/hosts
+> \[!NOTE]
+> На macOS і Windows додаток Minikube ingress **не підтримує використання IP-адреси кластера** при запуску на Docker.
+> Тому для локального доступу через 127.0.0.1 потрібно виконати команду:
+>
+> ```shell
+> minikube tunnel --profile microservice-deployment
+> ```
+>
+> Додайте наступне до вашого `/etc/hosts`:
+>
 > ```shell
 >   vi /etc/hosts
->```
+> ```
 >
 > ```
 >    127.0.0.1       grafana.local
-> 
 >    127.0.0.1       keycloak.local
-> 
 >    127.0.0.1       prometheus.local
 > ```
 
-| **Components** | **Docker**                   | **Kubernetes on Mac**      | Note                                           |
-|----------------|------------------------------|----------------------------|------------------------------------------------|
-| **Gateway**    | http://localhost:9000        | http://127.0.0.1:80        |                                                |
-| **Price**      | http://localhost:8080/prices | http://127.0.0.1:80/prices |                                                |
-| **Grafana**    | http://localhost:3000        | http://grafana.local       | Add `127.0.0.1 grafana.local` in /etc/hosts    |
-| **Loki**       | http://loki:3100             | http://loki:3100           |                                                |
-| **Tempo**      | http://tempo:3200            | http://tempo:3200          |                                                |
-| **Fluent-bit** | http://fluent-bit:24224      | http://fluent-bit:24224    | http on 4318 and grpc on 4317                  |
-| **Prometheus** | http://localhost:9090        | http://prometheus.local    | Add `127.0.0.1 prometheus.local` in /etc/hosts |
-| **Keycloak**   | http://localhost:8081        | http://keycloak.local      | Add `127.0.0.1 keycloak.local` in /etc/hosts   |
+| **Компонент**  | **Docker**                                                   | **Kubernetes на Mac**                                    | Примітка                                          |
+| -------------- | ------------------------------------------------------------ | -------------------------------------------------------- | ------------------------------------------------- |
+| **Gateway**    | [http://localhost:9000](http://localhost:9000)               | [http://127.0.0.1:80](http://127.0.0.1:80)               |                                                   |
+| **Price**      | [http://localhost:8080/prices](http://localhost:8080/prices) | [http://127.0.0.1:80/prices](http://127.0.0.1:80/prices) |                                                   |
+| **Grafana**    | [http://localhost:3000](http://localhost:3000)               | [http://grafana.local](http://grafana.local)             | Додайте `127.0.0.1 grafana.local` у /etc/hosts    |
+| **Loki**       | [http://loki:3100](http://loki:3100)                         | [http://loki:3100](http://loki:3100)                     |                                                   |
+| **Tempo**      | [http://tempo:3200](http://tempo:3200)                       | [http://tempo:3200](http://tempo:3200)                   |                                                   |
+| **Fluent-bit** | [http://fluent-bit:24224](http://fluent-bit:24224)           | [http://fluent-bit:24224](http://fluent-bit:24224)       | http на 4318 і grpc на 4317                       |
+| **Prometheus** | [http://localhost:9090](http://localhost:9090)               | [http://prometheus.local](http://prometheus.local)       | Додайте `127.0.0.1 prometheus.local` у /etc/hosts |
+| **Keycloak**   | [http://localhost:8081](http://localhost:8081)               | [http://keycloak.local](http://keycloak.local)           | Додайте `127.0.0.1 keycloak.local` у /etc/hosts   |
 
-> [!TIP]
-> On Linux, Minikube runs as a native process directly on the host machine, rather than inside a virtual machine or a
-> Docker container. This allows it to acquire a real, routable IP address that can be accessed from the host system
-> without extra configuration.
+> \[!TIP]
+> На Linux Minikube працює як рідний процес безпосередньо на хості, а не всередині віртуальної машини або контейнера Docker.
+> Це дозволяє отримати справжню IP-адресу, яку можна використовувати для доступу з хост-системи без додаткової конфігурації.
 >
 > ```
 >   $ minikube ip --profile microservice-deployment
 >   192.154.19.8 
 > ```
 >
-> Now, all the above tabular endpoints available at http://192.154.19.8/**
-
-Also, please use **OpenAPI specs**, **bruno** or **postman** for API details. I will add Swagger/SpringDoc as when I get
-time!!
+> Тепер усі ендпоінти з таблиці будуть доступні за адресою [http://192.154.19.8/](http://192.154.19.8/)\*\*
 
 ---
 
-# Guide to Grafana
-
-### Accessing Loki, Tempo, Prometheus, and Dashboards in Grafana
-
-## Step 1: Log In to Grafana
-
-1. Open your browser and go to your Grafana instance (e.g., `http://localhost:3000`).
-2. Log in with your credentials (default: `admin`/`admin`). Update the password if prompted.
+Також використовуйте **OpenAPI specs**, **bruno** або **postman** для перегляду API. Я додам Swagger/SpringDoc, коли матиму час!
 
 ---
 
-## Step 2: Add Data Sources (Loki, Tempo, Prometheus)
+# Гайд по Grafana
 
-Configure Loki, Tempo, and Prometheus as data sources in Grafana.
+### Доступ до Loki, Tempo, Prometheus і дашбордів у Grafana
 
-1. **Navigate to Connections**:
-    - From the left sidebar, hover over the **Connections** icon (plug symbol) and click **Data sources**.  
-      Or use the hamburger menu (☰) > **Connections** > **Data sources**.
+## Крок 1: Вхід у Grafana
 
-2. **Add a New Data Source**:
-    - Click **+ Add new data source** in the top-right corner.
-
-3. **Configure Prometheus**:
-    - Search for `Prometheus` and select it.
-    - Set **Name** (e.g., "Prometheus").
-    - Enter **URL** (e.g., `http://prometheus:9090`).
-    - Leave defaults unless specific settings (e.g., authentication) are needed.
-    - Click **Save & test**. Confirm "Data source is working."
-
-4. **Configure Loki**:
-    - Search for `Loki` and select it.
-    - Set **Name** (e.g., "Loki").
-    - Enter **URL** (e.g., `http://loki:3100`).
-    - Optionally, set **Max lines** (e.g., 1000) under **Additional settings**.
-    - Click **Save & test**. Verify it works.
-
-5. **Configure Tempo**:
-    - Search for `Tempo` and select it.
-    - Set **Name** (e.g., "Tempo").
-    - Enter **URL** (e.g., `http://tempo:3200`).
-    - Optionally, link to Loki for trace-to-log correlation via **Derived Field** (e.g., match `traceID=(\w+)`).
-    - Click **Save & test**. Ensure it’s operational.
+1. Відкрийте браузер і перейдіть за адресою вашого Grafana (наприклад, `http://localhost:3000`).
+2. Увійдіть, використовуючи свої облікові дані (за замовчуванням: `admin`/`admin`). Якщо потрібно, змініть пароль.
 
 ---
 
-## Step 3: Access via Explore
+## Крок 2: Додавання джерел даних (Loki, Tempo, Prometheus)
 
-Use the **Explore** view to query data directly from Loki, Tempo, and Prometheus.
+Налаштуйте Loki, Tempo та Prometheus як джерела даних у Grafana.
 
-1. **Open Explore**:
-    - Click the **Explore** icon (compass) in the left sidebar, or use the hamburger menu (☰) > **Explore**.
+1. **Перейдіть у Connections**:
 
-2. **Select a Data Source**:
-    - Use the dropdown at the top to choose:
-        - **Prometheus**: Metrics (e.g., `rate(http_server_requests_seconds_count[5m])`).
-        - **Loki**: Logs (e.g., `{job="fluent-bit"} |= "error"`).
-        - **Tempo**: Traces (e.g., search by trace ID or service).
+   * У лівому меню наведіть курсор на іконку **Connections** (значок штекера) та виберіть **Data sources**.
+     Або відкрийте меню (☰) > **Connections** > **Data sources**.
 
-3. **Run Queries**:
-    - **Prometheus**: Enter a PromQL query and click **Run query**. View as graph or table.
-    - **Loki**: Use LogQL or the **Builder** tab to filter logs. Click **Run query** for logs or metrics.
-    - **Tempo**: Input a trace ID or use the **Search** tab (filter by service, duration, tags). View trace
-      visualizations.
+2. **Додайте нове джерело даних**:
 
-4. **Switch Views**:
-    - Toggle between **Logs**, **Graph**, or **Traces** tabs above the results.
+   * Натисніть **+ Add new data source** у верхньому правому куті.
+
+3. **Налаштуйте Prometheus**:
+
+   * Знайдіть `Prometheus` і виберіть його.
+   * Вкажіть **Name** (наприклад, "Prometheus").
+   * Вкажіть **URL** (наприклад, `http://prometheus:9090`).
+   * Залиште налаштування за замовчуванням, якщо не потрібна аутентифікація чи інші специфічні опції.
+   * Натисніть **Save & test**. Переконайтесь, що з’явиться повідомлення "Data source is working".
+
+4. **Налаштуйте Loki**:
+
+   * Знайдіть `Loki` і виберіть його.
+   * Вкажіть **Name** (наприклад, "Loki").
+   * Вкажіть **URL** (наприклад, `http://loki:3100`).
+   * За бажанням встановіть **Max lines** (наприклад, 1000) у розділі **Additional settings**.
+   * Натисніть **Save & test**. Перевірте, чи все працює.
+
+5. **Налаштуйте Tempo**:
+
+   * Знайдіть `Tempo` і виберіть його.
+   * Вкажіть **Name** (наприклад, "Tempo").
+   * Вкажіть **URL** (наприклад, `http://tempo:3200`).
+   * За бажанням зв’яжіть з Loki для кореляції трасування з логами через **Derived Field** (наприклад, `traceID=(\w+)`).
+   * Натисніть **Save & test**. Переконайтесь, що джерело працює.
 
 ---
 
-## Step 4: Access and Create Dashboards
+## Крок 3: Перехід у Explore
 
-Visualize data from Loki, Tempo, and Prometheus using dashboards.
+Використовуйте вкладку **Explore** для виконання запитів безпосередньо до Loki, Tempo та Prometheus.
 
-1. **View Existing Dashboards**:
-    - Click the **Dashboards** icon (four-square grid) in the sidebar.
-    - Select **Browse** to see available dashboards (e.g., from `Spring Boot 3.x Statistic`).
+1. **Відкрийте Explore**:
 
-2. **Create a New Dashboard**:
-    - Go to **Dashboards** > **+ New** > **New dashboard**.
-    - Click **+ Add visualization**.
-    - Choose a data source (Prometheus, Loki, or Tempo).
-    - Add queries:
-        - **Prometheus**: Metric query (e.g., `http_server_requests_seconds_count`), visualize as Graph.
-        - **Loki**: Log query (e.g., `{job="fluent-bit"}`), use **Logs** or **Time series**.
-        - **Tempo**: Grab a Trace ID or search query, visualize as a trace timeline.
-    - Customize panels and click **Apply**.
+   * Клацніть іконку **Explore** (компас) у лівому меню, або через меню (☰) > **Explore**.
 
-3. **Save the Dashboard**:
-    - Click the **Save** icon (floppy disk) in the top-right.
-    - Name and save the dashboard.
+2. **Виберіть джерело даних**:
 
-4. **Import Pre-Built Dashboards**:
-    - Go to **Dashboards** > **+ New** > **Import**.
-    - Upload JSON files provided in the directory /grafana-dashboard.
-    - Map data sources and import.
+   * Використайте випадаючий список зверху для вибору:
+
+      * **Prometheus**: Метрики (наприклад, `rate(http_server_requests_seconds_count[5m])`).
+      * **Loki**: Логи (наприклад, `{job="fluent-bit"} |= "error"`).
+      * **Tempo**: Трейси (шукайте за trace ID або сервісом).
+
+3. **Виконуйте запити**:
+
+   * **Prometheus**: Введіть PromQL-запит і натисніть **Run query**. Переглядайте у вигляді графіку чи таблиці.
+   * **Loki**: Використовуйте LogQL або вкладку **Builder** для фільтрації логів. Натисніть **Run query**.
+   * **Tempo**: Введіть trace ID або скористайтеся вкладкою **Search** (фільтруйте за сервісом, тривалістю, тегами). Переглядайте візуалізацію трейсу.
+
+4. **Перемикайте вигляд**:
+
+   * Перемикайтесь між вкладками **Logs**, **Graph** або **Traces** над результатами.
+
+---
+
+## Крок 4: Перегляд та створення дашбордів
+
+Візуалізуйте дані з Loki, Tempo і Prometheus за допомогою дашбордів.
+
+1. **Перегляд існуючих дашбордів**:
+
+   * Клацніть іконку **Dashboards** (сітка з чотирьох квадратів) у боковому меню.
+   * Виберіть **Browse** для перегляду існуючих дашбордів (наприклад, з `Spring Boot 3.x Statistic`).
+
+2. **Створіть новий дашборд**:
+
+   * Перейдіть у **Dashboards** > **+ New** > **New dashboard**.
+   * Натисніть **+ Add visualization**.
+   * Виберіть джерело даних (Prometheus, Loki або Tempo).
+   * Додайте запити:
+
+      * **Prometheus**: Запит метрики (наприклад, `http_server_requests_seconds_count`), візуалізуйте як графік.
+      * **Loki**: Запит до логів (наприклад, `{job="fluent-bit"}`), використовуйте **Logs** або **Time series**.
+      * **Tempo**: Введіть trace ID або запит на пошук, візуалізуйте як хронологію трейсу.
+   * Налаштуйте панелі та натисніть **Apply**.
+
+3. **Збережіть дашборд**:
+
+   * Клацніть іконку **Save** (дискета) у верхньому правому куті.
+   * Вкажіть ім’я та збережіть дашборд.
+
+4. **Імпортуйте готові дашборди**:
+
+   * Перейдіть у **Dashboards** > **+ New** > **Import**.
+   * Завантажте JSON-файли, які є у директорії /grafana-dashboard.
+   * Призначте відповідні джерела даних і імпортуйте.
 
 ---
 
